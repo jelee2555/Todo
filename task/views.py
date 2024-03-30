@@ -24,3 +24,18 @@ class TaskListAPIView(APIView):
         tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
+
+
+class TaskDateListAPIView(APIView):
+    # 03-01 날짜별 task list 불러오기
+    def get(self, request):
+        queryset = Task.objects.all()
+        date = self.request.query_params.get('date')
+        if date is not None:
+            queryset = queryset.filter(task_date=date)
+            serializer = TaskSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
