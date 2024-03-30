@@ -6,4 +6,5 @@ urlpatterns = [
     path('', views.TaskAPIView.as_view()),
     path('list/', views.TaskListAPIView.as_view()),
     path('list/date/', views.TaskDateListAPIView.as_view()),
+    path('<int:pk>/', views.TaskEachAPIView.as_view()),
 ]
