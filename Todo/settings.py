@@ -20,7 +20,7 @@ env = environ.Env(
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Set the project base directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Take environment variables from .env files
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
+    'task',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +89,7 @@ WSGI_APPLICATION = 'Todo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': env('DATABASE_NAME')
+        'NAME': BASE_DIR / 'db.sqlite3'
     }
 }
 
