@@ -31,7 +31,19 @@ class TaskEachAPIView(APIView):
         if task is not None:
             serializer = TaskSerializer(task)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # 01-03 task 수정
+    def patch(self, request, pk):
+        task = self.get_object(pk)
+        if task is None:
+            return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TaskSerializer(task, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 01-04 task 삭제
     def delete(self, request, pk):
@@ -39,7 +51,7 @@ class TaskEachAPIView(APIView):
         if task is not None:
             task.delete()
             return Response({'message': 'task가 정상적으로 삭제되었습니다.'}, status=status.HTTP_200_OK)
-        return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class TaskListAPIView(APIView):
