@@ -3,13 +3,16 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
+from accounts.utils import login_check
 from task.models import Task
 from task.serializers import TaskSerializer
 
 
 class TaskAPIView(APIView):
     # 01-02 task 생성
+    @login_check
     def post(self, request):
+        request.data['user_id'] = request.user.id
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -34,6 +37,7 @@ class TaskEachAPIView(APIView):
         return Response({'message': '해당 id의 task가 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
 
     # 01-03 task 수정
+    @login_check
     def patch(self, request, pk):
         task = self.get_object(pk)
         if task is None:
@@ -46,6 +50,7 @@ class TaskEachAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 01-04 task 삭제
+    @login_check
     def delete(self, request, pk):
         task = self.get_object(pk)
         if task is not None:
